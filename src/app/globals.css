@@ -1,26 +1,207 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #fbfbfd;
+  --foreground: #09090b;
+  --card-bg: rgba(255, 255, 255, 0.85);
+  --card-border: rgba(228, 228, 231, 0.95);
+  --glow-color: rgba(9, 9, 11, 0.04);
+  --accent-color: #09090b;
+  --noise-opacity: 0.015;
+  --grid-color: rgba(9, 9, 11, 0.02);
+  --grid-dot-color: rgba(9, 9, 11, 0.035);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.dark {
+  --background: #070709;
+  --foreground: #f4f4f5;
+  --card-bg: rgba(18, 18, 24, 0.75);
+  --card-border: rgba(82, 82, 91, 0.35);
+  --glow-color: rgba(250, 250, 250, 0.05);
+  --accent-color: #ffffff;
+  --noise-opacity: 0.025;
+  --grid-color: rgba(255, 255, 255, 0.025);
+  --grid-dot-color: rgba(255, 255, 255, 0.05);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Smooth theme transitions for core structural & visual elements */
+body, .glass-panel, .glass-card, a, button, input, textarea {
+  transition: background-color 0.5s cubic-bezier(0.16, 1, 0.3, 1), 
+              color 0.5s cubic-bezier(0.16, 1, 0.3, 1), 
+              border-color 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+              backdrop-filter 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Premium Noise Grid Overlay */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  opacity: var(--noise-opacity);
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* Global Subtle Geometric Dot Grid Pattern */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(circle at 1px 1px, var(--grid-dot-color) 1px, transparent 0);
+  background-size: 24px 24px;
+  pointer-events: none;
+  z-index: -45;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--card-border);
+  border-radius: 9px;
+  border: 2px solid var(--background);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--foreground);
+}
+
+/* Selection */
+::selection {
+  background: var(--foreground);
+  color: var(--background);
+}
+
+/* Glassmorphism Panel with High-Contrast borders and Inner Glow */
+.glass-panel {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03), 
+              inset 0 1px 1px rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-radius: 12px;
+}
+
+.dark .glass-panel {
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35), 
+              inset 0 1px 1px rgba(255, 255, 255, 0.05);
+}
+
+/* Premium Elevating Glass Cards */
+.glass-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.03),
+              inset 0 1px 0.5px rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-radius: 12px;
+}
+
+.dark .glass-card {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25),
+              inset 0 1px 0.5px rgba(255, 255, 255, 0.06);
+}
+
+.glass-card:hover {
+  border-color: var(--accent-color);
+  box-shadow: 0 16px 40px -10px var(--glow-color),
+              inset 0 1px 1px rgba(255, 255, 255, 0.25);
+  transform: translateY(-4px);
+}
+
+.dark .glass-card:hover {
+  box-shadow: 0 16px 40px -10px rgba(255, 255, 255, 0.05),
+              inset 0 1px 1px rgba(255, 255, 255, 0.1);
+}
+
+/* Radial Accent Lighting */
+.radial-glow {
+  background: radial-gradient(circle 600px at var(--x, 0px) var(--y, 0px), var(--glow-color), transparent 80%);
+}
+
+/* Premium Typography Gradients */
+.gradient-text {
+  background: linear-gradient(135deg, var(--foreground) 30%, #52525b 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.dark .gradient-text {
+  background: linear-gradient(135deg, #ffffff 40%, #a1a1aa 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Fine border overlays */
+.fine-border {
+  border: 1px solid var(--card-border);
+}
+
+/* Custom Cursor support */
+@media (pointer: fine) {
+  .custom-cursor-active, 
+  .custom-cursor-active a, 
+  .custom-cursor-active button,
+  .custom-cursor-active [role="button"],
+  .custom-cursor-active input,
+  .custom-cursor-active textarea {
+    cursor: none !important;
+  }
+}
+
+/* Hide scrollbars */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Micro-animations */
+@keyframes dash {
+  to {
+    stroke-dashoffset: -40;
+  }
+}
+
+.animate-dash {
+  stroke-dasharray: 5;
+  animation: dash 2s linear infinite;
+}
+
+@keyframes pulse-subtle {
+  0%, 100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.85;
+  }
+}
+
+.pulse-glow {
+  animation: pulse-subtle 4s ease-in-out infinite;
 }
