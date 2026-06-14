@@ -18,6 +18,7 @@ import Contact from "@/components/Contact";
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
+  const [hoveredSkill, setHoveredSkill] = useState<string | null>(null);
 
   return (
     <>
@@ -35,9 +36,9 @@ export default function Home() {
         <CurrentRole />
         <CurrentFocus />
         <About />
-        <Skills />
+        <Skills hoveredSkill={hoveredSkill} setHoveredSkill={setHoveredSkill} />
         <Architecture />
-        <Projects />
+        <Projects activeSkillFilter={hoveredSkill} />
         <AILab />
         <Certifications />
         <Achievements />
@@ -46,7 +47,7 @@ export default function Home() {
 
         {/* Footer */}
         <footer className="py-8 text-center text-[10px] text-zinc-400 dark:text-zinc-600 font-mono border-t border-zinc-200/40 dark:border-zinc-800/40 bg-zinc-50/20 dark:bg-zinc-950/10">
-          <div>&copy; {new Date().getFullYear()} SANJU SUBASH. ALL RIGHTS RESERVED.</div>
+          <div suppressHydrationWarning>&copy; {new Date().getFullYear()} SANJU SUBASH. ALL RIGHTS RESERVED.</div>
           <div className="mt-1">
             BUILT WITH NEXT.JS &bull; TAILWIND CSS &bull; FRAMER MOTION
           </div>

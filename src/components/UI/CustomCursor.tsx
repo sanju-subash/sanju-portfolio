@@ -6,6 +6,7 @@ import { motion, useMotionValue, useSpring } from "framer-motion";
 export default function CustomCursor() {
   const [isVisible, setIsVisible] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const [hasMoved, setHasMoved] = useState(false);
 
   const cursorX = useMotionValue(-100);
   const cursorY = useMotionValue(-100);
@@ -23,6 +24,7 @@ export default function CustomCursor() {
     document.documentElement.classList.add("custom-cursor-active");
 
     const moveCursor = (e: MouseEvent) => {
+      setHasMoved(true);
       cursorX.set(e.clientX - 6);
       cursorY.set(e.clientY - 6);
     };
@@ -53,7 +55,7 @@ export default function CustomCursor() {
     };
   }, [cursorX, cursorY]);
 
-  if (!isVisible) return null;
+  if (!isVisible || !hasMoved) return null;
 
   return (
     <motion.div

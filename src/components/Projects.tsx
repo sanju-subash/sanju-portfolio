@@ -64,7 +64,49 @@ const PROJECTS_DATA: Project[] = [
   },
 ];
 
-export default function Projects() {
+interface ProjectsProps {
+  activeSkillFilter?: string | null;
+}
+
+const getSkillColor = (skillId: string | null) => {
+  if (!skillId) return null;
+  const id = skillId.toLowerCase();
+  if (["python", "java", "c", "typescript", "javascript"].includes(id)) return "var(--accent-programming)";
+  if (["gemini", "langchain", "openai"].includes(id)) return "var(--accent-aiml)";
+  if (["gcp", "docker"].includes(id)) return "var(--accent-cloud)";
+  if (["mongodb", "postgresql", "mysql"].includes(id)) return "var(--accent-databases)";
+  if (["n8n", "github"].includes(id)) return "var(--accent-automation)";
+  if (["vapi", "flask"].includes(id)) return "var(--accent-backend)";
+  return "var(--accent-color)";
+};
+
+const isTechRelated = (techStack: string[], filter: string | null) => {
+  if (!filter) return false;
+  const f = filter.toLowerCase();
+  return techStack.some((tech) => {
+    const t = tech.toLowerCase();
+    if (f === "python" && t === "python") return true;
+    if (f === "java" && t === "java") return true;
+    if (f === "c" && (t === "c" || t === "c/c++")) return true;
+    if (f === "typescript" && t === "typescript") return true;
+    if (f === "javascript" && t === "javascript") return true;
+    if (f === "gcp" && (t === "google cloud" || t === "gcp" || t === "google cloud run")) return true;
+    if (f === "docker" && t === "docker") return true;
+    if (f === "mongodb" && t === "mongodb") return true;
+    if (f === "postgresql" && t === "postgresql") return true;
+    if (f === "mysql" && t === "mysql") return true;
+    if (f === "n8n" && (t === "n8n" || t === "make.com")) return true;
+    if (f === "github" && (t === "github" || t === "git")) return true;
+    if (f === "vapi" && (t === "vapi" || t === "vapi telephony")) return true;
+    if (f === "openai" && t === "openai") return true;
+    if (f === "gemini" && (t === "gemini ai" || t === "gemini")) return true;
+    if (f === "langchain" && t === "langchain") return true;
+    if (f === "flask" && t === "flask") return true;
+    return t.includes(f) || f.includes(t);
+  });
+};
+
+export default function Projects({ activeSkillFilter = null }: ProjectsProps) {
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [activeProject, setActiveProject] = useState<Project | null>(null);
@@ -77,9 +119,11 @@ export default function Projects() {
     return matchesSearch && matchesCat;
   });
 
+  const activeAccent = getSkillColor(activeSkillFilter);
+
   return (
     <section id="projects" className="py-20 relative border-t border-zinc-200/40 dark:border-zinc-800/40">
-      <div className="max-w-6xl mx-auto px-6">
+      <div className="max-w-6xl mx-auto px-6 animate-fade-in">
         <div className="space-y-2 text-center md:text-left mb-12">
           <span className="text-[10px] uppercase tracking-widest text-zinc-500 dark:text-zinc-400 font-mono block font-bold">
             Case Studies
@@ -126,48 +170,62 @@ export default function Projects() {
 
         {/* Project Card Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredProjects.map((project) => (
-            <div
-              key={project.id}
-              onClick={() => setActiveProject(project)}
-              className="glass-card p-6 flex flex-col justify-between h-64 rounded-xl cursor-none group shadow-md"
-            >
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-[9px] font-mono uppercase tracking-wider text-zinc-500 dark:text-zinc-400 font-extrabold">
-                    {project.category}
-                  </span>
-                  <ArrowUpRight className="w-4 h-4 text-zinc-400 group-hover:text-zinc-950 dark:group-hover:text-white transition-colors" />
+          {filteredProjects.map((project) => {
+            const isRelated = activeSkillFilter ? isTechRelated(project.techStack, activeSkillFilter) : false;
+            const hasFilter = !!activeSkillFilter;
+            const isDimmed = hasFilter && !isRelated;
+
+            return (
+              <div
+                key={project.id}
+                onClick={() => setActiveProject(project)}
+                className={`glass-card p-6 flex flex-col justify-between h-64 rounded-xl cursor-none group shadow-md transition-all duration-300 ${
+                  isRelated ? "scale-102 ring-2" : ""
+                } ${isDimmed ? "opacity-30 blur-[0.4px]" : "opacity-100"}`}
+                style={{
+                  borderColor: isRelated && activeAccent ? activeAccent : undefined,
+                  boxShadow: isRelated && activeAccent 
+                    ? `0 12px 32px -8px ${activeAccent}25, inset 0 1px 0.5px rgba(255,255,255,0.06)` 
+                    : undefined
+                }}
+              >
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[9px] font-mono uppercase tracking-wider text-zinc-500 dark:text-zinc-400 font-extrabold">
+                      {project.category}
+                    </span>
+                    <ArrowUpRight className="w-4 h-4 text-zinc-400 group-hover:text-zinc-950 dark:group-hover:text-white transition-colors" />
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <h3 className="text-sm font-extrabold text-zinc-950 dark:text-white group-hover:text-zinc-900 dark:group-hover:text-white transition-colors leading-snug">
+                      {project.title}
+                    </h3>
+                    <p className="text-xs text-zinc-600 dark:text-zinc-300 leading-relaxed line-clamp-3 font-sans font-medium">
+                      {project.shortDesc}
+                    </p>
+                  </div>
                 </div>
 
-                <div className="space-y-1.5">
-                  <h3 className="text-sm font-extrabold text-zinc-950 dark:text-white group-hover:text-zinc-900 dark:group-hover:text-white transition-colors leading-snug">
-                    {project.title}
-                  </h3>
-                  <p className="text-xs text-zinc-600 dark:text-zinc-300 leading-relaxed line-clamp-3 font-sans font-medium">
-                    {project.shortDesc}
-                  </p>
+                {/* Badges footer */}
+                <div className="flex flex-wrap gap-1.5 mt-4">
+                  {project.techStack.slice(0, 3).map((tech) => (
+                    <span
+                      key={tech}
+                      className="px-2 py-0.5 rounded text-[9px] font-mono bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-350 border border-zinc-200 dark:border-zinc-800 font-bold"
+                    >
+                      {tech}
+                    </span>
+                  ))}
+                  {project.techStack.length > 3 && (
+                    <span className="text-[9px] font-mono text-zinc-500 dark:text-zinc-500 self-center font-bold">
+                      +{project.techStack.length - 3}
+                    </span>
+                  )}
                 </div>
               </div>
-
-              {/* Badges footer */}
-              <div className="flex flex-wrap gap-1.5 mt-4">
-                {project.techStack.slice(0, 3).map((tech) => (
-                  <span
-                    key={tech}
-                    className="px-2 py-0.5 rounded text-[9px] font-mono bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-800 font-bold"
-                  >
-                    {tech}
-                  </span>
-                ))}
-                {project.techStack.length > 3 && (
-                  <span className="text-[9px] font-mono text-zinc-500 dark:text-zinc-500 self-center font-bold">
-                    +{project.techStack.length - 3}
-                  </span>
-                )}
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* Detailed Case Study Modal Overlay */}

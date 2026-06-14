@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { usePathname, useRouter } from "next/navigation";
 import ThemeToggle from "./ThemeToggle";
 import { Menu, X } from "lucide-react";
 
@@ -19,6 +20,8 @@ export default function Header() {
   const [activeSection, setActiveSection] = useState("");
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
+  const router = useRouter();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -28,6 +31,7 @@ export default function Header() {
       let currentSection = "";
 
       for (const item of NAV_ITEMS) {
+        if (item.href.startsWith("/")) continue;
         const el = document.querySelector(item.href);
         if (el) {
           const top = (el as HTMLElement).offsetTop;
@@ -47,8 +51,19 @@ export default function Header() {
   }, []);
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    e.preventDefault();
     setMobileMenuOpen(false);
+
+    if (href.startsWith("/")) {
+      // Direct page change - let default link action occur
+      return;
+    }
+
+    e.preventDefault();
+    if (pathname !== "/") {
+      router.push(`/${href}`);
+      return;
+    }
+
     const el = document.querySelector(href);
     if (el) {
       const offset = 80;
@@ -89,7 +104,9 @@ export default function Header() {
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-1.5 px-2 py-1 glass-panel shadow-sm">
             {NAV_ITEMS.map((item) => {
-              const isActive = activeSection === item.href;
+              const isActive = item.href.startsWith("/")
+                ? pathname === item.href
+                : activeSection === item.href && pathname === "/";
               return (
                 <a
                   key={item.href}
@@ -144,7 +161,7 @@ export default function Header() {
                 href={item.href}
                 onClick={(e) => handleNavClick(e, item.href)}
                 className={`text-lg font-bold tracking-wide cursor-none ${
-                  activeSection === item.href
+                  (item.href.startsWith("/") ? pathname === item.href : activeSection === item.href && pathname === "/")
                     ? "text-zinc-950 dark:text-white"
                     : "text-zinc-600 dark:text-zinc-400"
                 }`}

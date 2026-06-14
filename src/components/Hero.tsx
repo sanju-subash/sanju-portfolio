@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, Download, Mail } from "lucide-react";
+import Link from "next/link";
 
 const ROTATING_TITLES = [
   "AI/ML Junior Software Engineer",
@@ -330,24 +331,28 @@ export default function Hero() {
           initial={{ opacity: 0, scale: 0.96 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="relative flex items-center justify-center w-full max-w-[480px] h-[280px] sm:h-[300px] rounded-xl border border-zinc-300/70 dark:border-zinc-800/80 bg-white/40 dark:bg-zinc-900/30 backdrop-blur-md shadow-2xl overflow-hidden"
+          className="relative flex items-center justify-center w-full max-w-[480px] h-[280px] sm:h-[300px] rounded-xl border border-zinc-350/80 dark:border-zinc-800/80 bg-white/30 dark:bg-zinc-900/30 backdrop-blur-md shadow-2xl overflow-hidden"
         >
-          {/* Tech HUD Corner Brackets */}
-          <div className="absolute top-2 left-2 w-3 h-3 border-t-2 border-l-2 border-zinc-400 dark:border-zinc-600 pointer-events-none opacity-80" />
-          <div className="absolute top-2 right-2 w-3 h-3 border-t-2 border-r-2 border-zinc-400 dark:border-zinc-600 pointer-events-none opacity-80" />
-          <div className="absolute bottom-2 left-2 w-3 h-3 border-b-2 border-l-2 border-zinc-400 dark:border-zinc-600 pointer-events-none opacity-80" />
-          <div className="absolute bottom-2 right-2 w-3 h-3 border-b-2 border-r-2 border-zinc-400 dark:border-zinc-600 pointer-events-none opacity-80" />
+          {/* Inner CRT Screen Scanlines & Matrix Grid Overlay */}
+          <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.12)_50%)] bg-[size:100%_4px] opacity-15 pointer-events-none z-20" />
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--grid-color)_1px,transparent_1px),linear-gradient(to_bottom,var(--grid-color)_1px,transparent_1px)] bg-[size:20px_20px] opacity-60 pointer-events-none z-0" />
 
-          {/* HUD Status Bar Text details */}
-          <div className="absolute top-2.5 left-7 right-7 flex items-center justify-between text-[8px] font-mono text-zinc-500 dark:text-zinc-500 uppercase tracking-widest pointer-events-none select-none">
+          {/* Tech HUD Corner Brackets - Positioned precisely inside rounded bounds */}
+          <div className="absolute top-3 left-3 w-4 h-4 border-t-2 border-l-2 border-zinc-400 dark:border-zinc-500 pointer-events-none opacity-85" />
+          <div className="absolute top-3 right-3 w-4 h-4 border-t-2 border-r-2 border-zinc-400 dark:border-zinc-500 pointer-events-none opacity-85" />
+          <div className="absolute bottom-3 left-3 w-4 h-4 border-b-2 border-l-2 border-zinc-400 dark:border-zinc-500 pointer-events-none opacity-85" />
+          <div className="absolute bottom-3 right-3 w-4 h-4 border-b-2 border-r-2 border-zinc-400 dark:border-zinc-500 pointer-events-none opacity-85" />
+
+          {/* HUD Status Bar Text details - Shifted inwards to resolve clipping */}
+          <div className="absolute top-4 left-7 right-7 flex items-center justify-between text-[8px] font-mono text-zinc-500 dark:text-zinc-400 uppercase tracking-widest pointer-events-none select-none z-20">
             <span>[ AI_ENGINE_STATUS: ONLINE ]</span>
             <span className="flex items-center gap-1">
-              <span className="w-1 h-1 rounded-full bg-emerald-500 animate-ping" />
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
               14ms LATENCY
             </span>
           </div>
 
-          <div className="absolute bottom-2.5 left-7 right-7 flex items-center justify-between text-[8px] font-mono text-zinc-500 dark:text-zinc-500 uppercase tracking-widest pointer-events-none select-none">
+          <div className="absolute bottom-4 left-7 right-7 flex items-center justify-between text-[8px] font-mono text-zinc-500 dark:text-zinc-400 uppercase tracking-widest pointer-events-none select-none z-20">
             <span>[ SYS_LOAD: 2.3% ]</span>
             <span>MODEL: GEMINI-2.5-PRO</span>
           </div>

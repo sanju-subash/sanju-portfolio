@@ -1,8 +1,13 @@
+@import url("https://db.onlinewebfonts.com/c/5ac3fe7c6abd2f62067f266d89671492?family=HelveticaNowDisplay-Medium");
+@import url("https://db.onlinewebfonts.com/c/1aa3377e489837a26d019bba501e779d?family=HelveticaNowDisplayW01-Rg");
+
 @import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
+  --font-heading: 'HelveticaNowDisplay-Medium', 'Helvetica Neue', Arial, sans-serif;
+  --font-body: 'HelveticaNowDisplayW01-Rg', 'Helvetica Neue', Arial, sans-serif;
   --background: #fbfbfd;
   --foreground: #09090b;
   --card-bg: rgba(255, 255, 255, 0.85);
@@ -12,6 +17,21 @@
   --noise-opacity: 0.015;
   --grid-color: rgba(9, 9, 11, 0.02);
   --grid-dot-color: rgba(9, 9, 11, 0.035);
+  
+  /* Category Accents - Light Mode (High Contrast / Accessible) */
+  --accent-programming: #1d4ed8;
+  --accent-aiml: #7e22ce;
+  --accent-cloud: #0e7490;
+  --accent-databases: #15803d;
+  --accent-automation: #c2410c;
+  --accent-backend: #4338ca;
+  
+  --accent-programming-glow: rgba(29, 78, 216, 0.06);
+  --accent-aiml-glow: rgba(126, 34, 206, 0.06);
+  --accent-cloud-glow: rgba(14, 116, 144, 0.06);
+  --accent-databases-glow: rgba(21, 128, 61, 0.06);
+  --accent-automation-glow: rgba(194, 65, 12, 0.06);
+  --accent-backend-glow: rgba(67, 56, 202, 0.06);
 }
 
 .dark {
@@ -24,6 +44,21 @@
   --noise-opacity: 0.025;
   --grid-color: rgba(255, 255, 255, 0.025);
   --grid-dot-color: rgba(255, 255, 255, 0.05);
+  
+  /* Category Accents - Dark Mode (Vibrant Glows) */
+  --accent-programming: #3b82f6;
+  --accent-aiml: #a855f7;
+  --accent-cloud: #06b6d4;
+  --accent-databases: #10b981;
+  --accent-automation: #f97316;
+  --accent-backend: #6366f1;
+  
+  --accent-programming-glow: rgba(59, 130, 246, 0.18);
+  --accent-aiml-glow: rgba(168, 85, 247, 0.18);
+  --accent-cloud-glow: rgba(6, 182, 212, 0.18);
+  --accent-databases-glow: rgba(16, 185, 129, 0.18);
+  --accent-automation-glow: rgba(249, 115, 22, 0.18);
+  --accent-backend-glow: rgba(99, 102, 241, 0.18);
 }
 
 body {
@@ -204,4 +239,73 @@ body::after {
 
 .pulse-glow {
   animation: pulse-subtle 4s ease-in-out infinite;
+}
+
+/* Liquid Glass Aesthetics */
+.liquid-glass {
+  background: rgba(255, 255, 255, 0.015);
+  background-blend-mode: luminosity;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border: none;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+.liquid-glass::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.4px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0.15) 20%, rgba(255, 255, 255, 0) 40%, rgba(255, 255, 255, 0) 60%, rgba(255, 255, 255, 0.15) 80%, rgba(255, 255, 255, 0.45) 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Marquee Scrolling Animations */
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes marquee-reverse {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 26s linear infinite;
+}
+
+.animate-marquee-reverse {
+  animation: marquee-reverse 26s linear infinite;
+}
+
+.animate-marquee:hover,
+.animate-marquee-reverse:hover {
+  animation-play-state: paused;
+}
+
+/* Animated flow lines */
+@keyframes flowPath {
+  to {
+    stroke-dashoffset: -20;
+  }
+}
+
+.animate-flow-line {
+  stroke-dasharray: 6 4;
+  animation: flowPath 1.5s linear infinite;
 }
